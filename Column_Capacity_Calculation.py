@@ -388,7 +388,7 @@ st.pyplot(m)
 
 col1, col2, col3 = st.columns(3)
 with col2:
-    axialForce = st.number_input("Axial Load: ", value=300, step=10) 
+    axialForce = st.number_input("Axial Load: ", value=600, step=10) 
 
 axialLoad = -1000*axialForce
 
@@ -440,7 +440,7 @@ hide_menu_style = """
 st.markdown(hide_menu_style, unsafe_allow_html=True)
 
 
-def MomentCurvature(name, concrete_output,steel_output,moment_curvature_output,secTag, b1, b2, h1, h2, axialLoad, maxK, numIncr=100):
+def MomentCurvature(name, concrete_output,steel_output,moment_curvature_output,secTag, b1, b2, h1, h2, axialLoad, maxK, numIncr):
         
         # Define two nodes at (0,0)
         node(1, 0.0, 0.0)
@@ -454,6 +454,7 @@ def MomentCurvature(name, concrete_output,steel_output,moment_curvature_output,s
         #                             tag ndI ndJ  secTag
         element('zeroLengthSection',  1,   1,   2,  secTag)
         
+             
         # Create recorder  
         recorder('Element', '-file', concrete_output, '-precision', int(5), '-time', '-dT', float(0.1) ,'-ele', 1, 'section', 'fiber', str(b1), str(h1), '1', 'stressStrain')
         recorder('Element', '-file', steel_output, '-precision', int(5), '-time', '-dT', float(0.1) ,'-ele', 1, 'section', 'fiber', str(b2), str(h2), '3', 'stressStrain')
@@ -483,13 +484,12 @@ def MomentCurvature(name, concrete_output,steel_output,moment_curvature_output,s
     
         # Compute curvature increment
         dK = maxK / numIncr
-    
+
         # Use displacement control at node 2 for section analysis
         integrator('DisplacementControl', 2,3,dK,1,dK,dK)
-    
+
         # Do the section analysis
         analyze(numIncr)
-        
 
 # def ConfinedConcrete(name, secTag, b1, b2, h1, h2, axialLoad, maxK, numIncr=100):    
 #     bo = width - cover
@@ -697,7 +697,7 @@ print("Estimated yield curvature: ", Ky)
 mu = 30
 
 # Number of analysis increments
-numIncr = 100
+numIncr = 1000
 
 # Call the section analysis procedure
 
@@ -714,6 +714,8 @@ results = open('results.out','a+')
 results.close()
 
 print("==========================")
+
+MomentCurvature(name, concrete_output,steel_output,moment_curvature_output, secTag, b1, b2, h1, h2, axialLoad, Ky*mu, numIncr)
 
 # Reading of Moment Curvature Results
 with open(moment_curvature_output) as f:
