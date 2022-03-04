@@ -388,7 +388,7 @@ st.pyplot(m)
 
 col1, col2, col3 = st.columns(3)
 with col2:
-    axialForce = st.number_input("Axial Load: ", value=1200, step=10) 
+    axialForce = st.number_input("Axial Load: ", value=1500, step=10) 
     
 axialLoad = -1000*axialForce
 
@@ -697,7 +697,7 @@ print("Estimated yield curvature: ", Ky)
 mu = 30
 
 # Number of analysis increments
-numIncr = 1500
+numIncr = 10000
 
 # Call the section analysis procedure
 
