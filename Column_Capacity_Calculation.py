@@ -390,7 +390,7 @@ col1, col2, col3 = st.columns(3)
 with col2:
     axialForce = st.number_input("Axial Load: ", value=300, step=10) 
 
-axialLoad = axialForce*-1000
+axialLoad = -1000*axialForce
 
 df_m_n = pd.DataFrame(list(zip(Force_List, Moment_List)), columns =['Axial Force', 'Moment'], dtype = float)
 Moment_List_180 = [x * -1 for x in Moment_List]
