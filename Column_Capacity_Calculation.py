@@ -657,7 +657,7 @@ print("Estimated yield curvature: ", Ky)
    
    
 # Target ductility for analysis
-mu = 20
+mu = 30
 
 # Number of analysis increments
 numIncr = 10000
