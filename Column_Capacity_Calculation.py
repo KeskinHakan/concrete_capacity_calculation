@@ -480,7 +480,7 @@ secTag = 1
 # CONCRETE                  tag   f'c        ec0   ecu E
 # Core concrete (confined)
 
-uniaxialMaterial('Concrete04',1, int(-fcc), float(-0.015),  float(-0.05),  int(young_modulus_concrete), 0.0, 0.0, 0.1)
+uniaxialMaterial('Concrete04',1, int(-fcc), float(-eco),  float(-0.05),  int(young_modulus_concrete), 0.0, 0.0, 0.1)
 
 # Cover concrete (unconfined)
 uniaxialMaterial('Concrete04',2, -fcd,  -eco,  -esp,  young_modulus_concrete, 0.0, 0.0, 0,1)
