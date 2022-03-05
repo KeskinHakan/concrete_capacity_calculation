@@ -30,7 +30,7 @@ b = st.sidebar.number_input("Depth (mm): ", value=500, step=50)
 h = st.sidebar.number_input("Width (mm): ",value=500, step=50)
 degree = st.sidebar.selectbox("Degree Type: ", {0, 90})
 cover = st.sidebar.number_input("Cover (mm): ",value=30, step=5)
-ecu_maximum = st.sidebar.number_input("Crushing Strain: ",value=0.010, step=0.001)
+ecu_maximum = st.sidebar.number_input("Crushing Strain: ",value=0.011, step=0.001)
 
 st.sidebar.header("Material Properties Properties")
 concrete_strength = st.sidebar.number_input("fc (MPa): ",value=25, step=100)
