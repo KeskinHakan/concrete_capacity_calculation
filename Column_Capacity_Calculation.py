@@ -30,14 +30,15 @@ b = st.sidebar.number_input("Depth (mm): ", value=500, step=50)
 h = st.sidebar.number_input("Width (mm): ",value=500, step=50)
 degree = st.sidebar.selectbox("Degree Type: ", {0, 90})
 cover = st.sidebar.number_input("Cover (mm): ",value=30, step=5)
+ecu_maximum = st.sidebar.number_input("Crushing Strain: ",value=0.010, step=0.001)
 
 st.sidebar.header("Material Properties Properties")
 concrete_strength = st.sidebar.number_input("fc (MPa): ",value=25, step=100)
-young_modulus_concrete = gamma_steel = st.sidebar.number_input("Ec (MPa): ",value=25000, step=100)
+young_modulus_concrete = 5000*math.sqrt(concrete_strength)
 fctk = 0.35*math.sqrt(concrete_strength)
 
 steel_strength = st.sidebar.number_input("fy (MPa): ",value=420, step=100)
-young_modulus_steel = gamma_steel = st.sidebar.number_input("Es (MPa): ",value=200000, step=100)
+young_modulus_steel = 200000
 
 coefficient = st.sidebar.selectbox("Material Coefficient: ", {"Nominal", "Expected"})
 gamma_concrete = st.sidebar.number_input("γconcrete (MPa): ",value=1, step=100)
@@ -72,7 +73,7 @@ fyd = steel_strength/gamma_steel
 fctd = fctk/gamma_concrete
 # 
 
-fcc, eco, esp = concrete_func(fcd,fyd, b, h, cover, diameter, total_rebar, dia_trans, nx, ny, n_leg_x, n_leg_y, s, young_modulus_concrete, coefficient)
+fcc, eco, esp, ecu_max, fcu_max, df_conf, eco_max = concrete_func(fcd,fyd, b, h, cover, diameter, total_rebar, dia_trans, nx, ny, n_leg_x, n_leg_y, s, young_modulus_concrete, coefficient, ecu_maximum)
 
 x_dir_list = []
 
@@ -402,7 +403,7 @@ st.pyplot(m)
 
 col1, col2, col3 = st.columns(3)
 with col2:
-    axialForce = st.number_input("Axial Load (kN): ", value=500, step=10) 
+    axialForce = st.number_input("Axial Load (kN): ", value=100, step=10) 
     
 axialLoad = -1000*axialForce
 
@@ -480,16 +481,17 @@ secTag = 1
 # CONCRETE                  tag   f'c        ec0   ecu E
 # Core concrete (confined)
 
-uniaxialMaterial('Concrete04',1, int(-fcc), float(-0.015),  float(-0.02),  int(young_modulus_concrete), 0.0, 0.0, 0.1)
+# uniaxialMaterial('Concrete04',1, int(-fcc), float(-0.006),  float(-0.02),  int(young_modulus_concrete), 0.0, 0.0, 0.1)
+
 
 # Cover concrete (unconfined)
-uniaxialMaterial('Concrete04',2, -fcd,  -eco,  -esp,  young_modulus_concrete, 0.0, 0.0, 0,1)
-
+# uniaxialMaterial('Concrete04',2, -fcd,  -eco,  -esp,  young_modulus_concrete, 0.0, 0.0, 0,1)
+uniaxialMaterial('Concrete01',1, -fcc, -eco_max,  -fcu_max,  -ecu_maximum)
 # uniaxialMaterial('Concrete04',1, float(fcc),  ecc,  -0.02,  Ec)
 
 # # Cover concrete (unconfined)
 # uniaxialMaterial('Concrete04',2, float(fc0),  -0.002,  -0.004,  Ec)
-
+uniaxialMaterial('Concrete01',2, -fcd,  -ecu,  0.0,  -esp)
 # STEEL
 # Reinforcing steel 
 
@@ -660,7 +662,7 @@ print("Estimated yield curvature: ", Ky)
 mu = 30
 
 # Number of analysis increments
-numIncr = 1000
+numIncr = 10000
 
 # Call the section analysis procedure
 

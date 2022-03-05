@@ -20,7 +20,7 @@ import math
 
 # Unconfined and Confined Concrete Model (Mander Model)
 
-def concrete_func(fcd,fyd, b, h, cover, diameter, total_rebar, dia_trans, nx, ny, n_leg_x, n_leg_y, s, young_modulus_concrete, coefficient):
+def concrete_func(fcd,fyd, b, h, cover, diameter, total_rebar, dia_trans, nx, ny, n_leg_x, n_leg_y, s, young_modulus_concrete, coefficient, ecu_maximum):
     d = h-cover # clear height
     b_clear = b-cover # clear height
     A_long = 3.14*diameter**2/4 # pi için math kütüphanesi çağıralacak. Longitudinal rebar area
@@ -159,7 +159,7 @@ def concrete_func(fcd,fyd, b, h, cover, diameter, total_rebar, dia_trans, nx, ny
         fco = fcd*1.3
     lambda_c = 2.254*sqrt(1+7.94*f1/fco)-2*(f1/fco)-1.254
     
-    fcc = fco*lambda_c
+    fcc = float(format(fco*lambda_c, ".2f"))
     fsp = 0
     eco = 0.002
     ecu = 0.0035
@@ -183,7 +183,7 @@ def concrete_func(fcd,fyd, b, h, cover, diameter, total_rebar, dia_trans, nx, ny
     while e < 0.02:
             x = e/ecc
             fc = (fcc*x*r)/(r-1+x**r)
-            fc_conf.append(format(fc, ".3f"))
+            fc_conf.append(format(fc, ".2f"))
             ec_conf.append(format(e, ".5f"))
             x_conf.append(format(x, ".3f"))
             e = e + 0.0001
@@ -195,7 +195,7 @@ def concrete_func(fcd,fyd, b, h, cover, diameter, total_rebar, dia_trans, nx, ny
                 fc = fco*x*r_unc/(r_unc-1+x**r_unc)
             elif e > ecu and e<=esp:
                 fc = f_cu+(e-ecu)*((fsp-f_cu)/(esp-ecu))
-            fc_unconf.append(format(fc, ".3f"))
+            fc_unconf.append(format(fc, ".2f"))
             ec_unconf.append(format(e, ".5f"))
             x_unconf.append(format(x, ".3f"))
             e = e + 0.0001
@@ -219,6 +219,13 @@ def concrete_func(fcd,fyd, b, h, cover, diameter, total_rebar, dia_trans, nx, ny
     
     df_fc = df_unconf['Stress']
     st.line_chart(df_fc)
+    
+    
+    fcc_max = df_conf.loc[df_conf['Stress']==fcc]
+    eco_max = fcc_max['Strain'].iloc[0]
+    ecu_max = df_conf.loc[df_conf['Strain']==ecu_maximum]
+    fcu_max = ecu_max['Stress'].iloc[0]
+    
     
     def convert_confined_df(df_conf):
         return df_conf.to_csv().encode('utf-8')
@@ -245,7 +252,7 @@ def concrete_func(fcd,fyd, b, h, cover, diameter, total_rebar, dia_trans, nx, ny
         key='download-csv'
     )
     
-    return fcc, eco, esp
+    return fcc, eco, esp, ecu_max, fcu_max, df_conf, eco_max
 
 # coefficient = st.sidebar.selectbox("Material Coefficient: ", {"Nominal", "Expected"})
 
