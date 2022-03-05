@@ -402,7 +402,7 @@ st.pyplot(m)
 
 col1, col2, col3 = st.columns(3)
 with col2:
-    axialForce = st.number_input("Axial Load (kN): ", value=300, step=10) 
+    axialForce = st.number_input("Axial Load (kN): ", value=500, step=10) 
     
 axialLoad = -1000*axialForce
 
@@ -480,7 +480,7 @@ secTag = 1
 # CONCRETE                  tag   f'c        ec0   ecu E
 # Core concrete (confined)
 
-uniaxialMaterial('Concrete04',1, int(-fcc), float(-eco),  float(-0.02),  int(young_modulus_concrete), 0.0, 0.0, 0.1)
+uniaxialMaterial('Concrete04',1, int(-fcc), float(-0.015),  float(-0.05),  int(young_modulus_concrete), 0.0, 0.0, 0.1)
 
 # Cover concrete (unconfined)
 uniaxialMaterial('Concrete04',2, -fcd,  -eco,  -esp,  young_modulus_concrete, 0.0, 0.0, 0,1)
@@ -529,12 +529,12 @@ if degree == 0:
     section('Fiber', 1)
     
     # Create the concrete core fibers
-    patch('rect',1,50,1 ,cover-y1, cover-z1, y1-cover, z1-cover)
+    patch('rect',1,10,1 ,cover-y1, cover-z1, y1-cover, z1-cover)
     
     
     # Create the concrete cover fibers (top, bottom, left, right)
-    patch('rect',2,50,1 ,-y1, z1-cover, y1, z1)
-    patch('rect',2,50,1 ,-y1, -z1, y1, cover-z1)
+    patch('rect',2,10,1 ,-y1, z1-cover, y1, z1)
+    patch('rect',2,10,1 ,-y1, -z1, y1, cover-z1)
     patch('rect',2,2,1 ,-y1, cover-z1, cover-y1, z1-cover)
     patch('rect',2,2,1 , y1-cover, cover-z1, y1, z1-cover)
     
@@ -542,11 +542,11 @@ if degree == 0:
     bottom = ['layer','straight', 3, n_bot, diameter_area, cover-y1+diameter, cover-z1+diameter, cover-y1+diameter, z1-cover-diameter]
     
     fib_sec_1 = [['section', 'Fiber', 1],
-    ['patch', 'rect',2,50,1 ,-y1, z1-cover, y1, z1],
-    ['patch', 'rect',2,50,1 ,-y1, -z1, y1, cover-z1],
+    ['patch', 'rect',2,10,1 ,-y1, z1-cover, y1, z1],
+    ['patch', 'rect',2,10,1 ,-y1, -z1, y1, cover-z1],
     ['patch', 'rect',2,2,1 ,-y1, cover-z1, cover-y1, z1-cover],
     ['patch', 'rect',2,2,1 , y1-cover, cover-z1, y1, z1-cover],
-    ['patch', 'rect',1,50,1 ,cover-y1, cover-z1, y1-cover, z1-cover],
+    ['patch', 'rect',1,10,1 ,cover-y1, cover-z1, y1-cover, z1-cover],
     top,
     bottom]
          
@@ -596,12 +596,12 @@ elif degree == 90:
     section('Fiber', 1)
     
     # Create the concrete core fibers
-    patch('rect',1,50,1 ,cover-y1, cover-z1, y1-cover, z1-cover)
+    patch('rect',1,10,1 ,cover-y1, cover-z1, y1-cover, z1-cover)
     
     
     # Create the concrete cover fibers (top, bottom, left, right)
-    patch('rect',2,50,1 ,-y1, z1-cover, y1, z1)
-    patch('rect',2,50,1 ,-y1, -z1, y1, cover-z1)
+    patch('rect',2,10,1 ,-y1, z1-cover, y1, z1)
+    patch('rect',2,10,1 ,-y1, -z1, y1, cover-z1)
     patch('rect',2,2,1 ,-y1, cover-z1, cover-y1, z1-cover)
     patch('rect',2,2,1 , y1-cover, cover-z1, y1, z1-cover)
     
@@ -609,11 +609,11 @@ elif degree == 90:
     bottom = ['layer','straight', 3, n_bot, diameter_area, cover-y1+diameter, cover-z1+diameter, cover-y1+diameter, z1-cover-diameter]
     
     fib_sec_1 = [['section', 'Fiber', 1],
-    ['patch', 'rect',2,50,1 ,-y1, z1-cover, y1, z1],
-    ['patch', 'rect',2,50,1 ,-y1, -z1, y1, cover-z1],
+    ['patch', 'rect',2,10,1 ,-y1, z1-cover, y1, z1],
+    ['patch', 'rect',2,10,1 ,-y1, -z1, y1, cover-z1],
     ['patch', 'rect',2,2,1 ,-y1, cover-z1, cover-y1, z1-cover],
     ['patch', 'rect',2,2,1 , y1-cover, cover-z1, y1, z1-cover],
-    ['patch', 'rect',1,50,1 ,cover-y1, cover-z1, y1-cover, z1-cover],
+    ['patch', 'rect',1,10,1 ,cover-y1, cover-z1, y1-cover, z1-cover],
     top,
     bottom]
          
@@ -657,7 +657,7 @@ print("Estimated yield curvature: ", Ky)
    
    
 # Target ductility for analysis
-mu = 15
+mu = 20
 
 # Number of analysis increments
 numIncr = 10000
