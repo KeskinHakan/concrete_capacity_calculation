@@ -199,8 +199,53 @@ def concrete_func(fcd,fyd, b, h, cover, diameter, total_rebar, dia_trans, nx, ny
             ec_unconf.append(format(e, ".5f"))
             x_unconf.append(format(x, ".3f"))
             e = e + 0.0001
+            
+    df_conf = pd.DataFrame(list(zip(ec_conf, fc_conf)), columns =['Strain', 'Stress'], dtype = float)
+
+    #Line Chart
+    as_list = df_conf["Strain"].tolist()
     
-    return ec_conf, fc_conf, fc_unconf, ec_unconf, fcc, eco, esp
+    df_conf.index = as_list
+    
+    df_fc = df_conf['Stress']
+    st.line_chart(df_fc)
+    
+    df_unconf = pd.DataFrame(list(zip(ec_unconf, fc_unconf)), columns =['Strain', 'Stress'], dtype = float)
+    
+    #Line Chart
+    as_list = df_unconf["Strain"].tolist()
+    
+    df_unconf.index = as_list
+    
+    df_fc = df_unconf['Stress']
+    st.line_chart(df_fc)
+    
+    def convert_confined_df(df_conf):
+        return df_conf.to_csv().encode('utf-8')
+    def convert_unconfined_df(df_unconf):
+        return df_unconf.to_csv().encode('utf-8')
+    
+    
+    csv_conf = convert_confined_df(df_conf)
+    csv_unconf = convert_unconfined_df(df_unconf)
+    
+    st.download_button(
+        "Confined Concrete - Press to Download",
+        csv_conf,
+        "confined.csv",
+        "text/csv",
+        key='download-csv'
+    )
+    
+    st.download_button(
+        "Unconfined Concrete - Press to Download",
+        csv_unconf,
+        "unconfined.csv",
+        "text/csv",
+        key='download-csv'
+    )
+    
+    return fcc, eco, esp
 
 # coefficient = st.sidebar.selectbox("Material Coefficient: ", {"Nominal", "Expected"})
 
@@ -255,48 +300,5 @@ def concrete_func(fcd,fyd, b, h, cover, diameter, total_rebar, dia_trans, nx, ny
 # e = 0.0036
 # fc1 = f_cu+(e-ecu)*((fsp-f_cu)/(esp-ecu))
 
-# df_conf = pd.DataFrame(list(zip(ec_conf, fc_conf)), columns =['Strain', 'Stress'], dtype = float)
 
-# #Line Chart
-# as_list = df_conf["Strain"].tolist()
-
-# df_conf.index = as_list
-
-# df_fc = df_conf['Stress']
-# st.line_chart(df_fc)
-
-# df_unconf = pd.DataFrame(list(zip(ec_unconf, fc_unconf)), columns =['Strain', 'Stress'], dtype = float)
-
-# #Line Chart
-# as_list = df_unconf["Strain"].tolist()
-
-# df_unconf.index = as_list
-
-# df_fc = df_unconf['Stress']
-# st.line_chart(df_fc)
-
-# def convert_confined_df(df_conf):
-#    return df_conf.to_csv().encode('utf-8')
-# def convert_unconfined_df(df_unconf):
-#    return df_unconf.to_csv().encode('utf-8')
-
-
-# csv_conf = convert_confined_df(df_conf)
-# csv_unconf = convert_unconfined_df(df_unconf)
-
-# st.download_button(
-#    "Confined Concrete - Press to Download",
-#    csv_conf,
-#    "confined.csv",
-#    "text/csv",
-#    key='download-csv'
-# )
-
-# st.download_button(
-#    "Unconfined Concrete - Press to Download",
-#    csv_unconf,
-#    "unconfined.csv",
-#    "text/csv",
-#    key='download-csv'
-# )
 

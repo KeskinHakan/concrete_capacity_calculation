@@ -72,7 +72,7 @@ fyd = steel_strength/gamma_steel
 fctd = fctk/gamma_concrete
 # 
 
-ec_conf, fc_conf, fc_unconf, ec_unconf, fcc, eco, esp = concrete_func(fcd,fyd, b, h, cover, diameter, total_rebar, dia_trans, nx, ny, n_leg_x, n_leg_y, s, young_modulus_concrete, coefficient)
+fcc, eco, esp = concrete_func(fcd,fyd, b, h, cover, diameter, total_rebar, dia_trans, nx, ny, n_leg_x, n_leg_y, s, young_modulus_concrete, coefficient)
 
 x_dir_list = []
 
