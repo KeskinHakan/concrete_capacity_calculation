@@ -35,6 +35,10 @@ def concrete_func(fcd,fyd, b, h, cover, diameter, total_rebar, dia_trans, nx, ny
     ratio_y = (n_leg_y*ho*A_tra)/(ho*bo*s)
     total_ratio = ratio_x + ratio_y
     
+    img_1 = Image.open("ColumnSection.png")
+    col1, col2, col3,col4,col5 = st.columns([1,1,1,1,1])
+    col2.image(img_1, width = 500, caption = "Typical Column Section")
+    
     if nx == 2:
         col1, col2, col3 = st.columns(3)
         with col1:
