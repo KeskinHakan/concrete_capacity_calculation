@@ -17,7 +17,8 @@ import openseespy.postprocessing.Get_Rendering as opsplt
 import openseespy.postprocessing.ops_vis as opsv
 import matplotlib.pyplot as plt
 from openseespy.opensees import *
-
+from Moment_Curvature_Func import MomentCurvature
+from Confined_Concrete_Mod import concrete_func
 
 st.title("M-N Interaction & Moment-Curvature Calculator")
 
@@ -38,6 +39,7 @@ fctk = 0.35*math.sqrt(concrete_strength)
 steel_strength = st.sidebar.number_input("fy (MPa): ",value=420, step=100)
 young_modulus_steel = gamma_steel = st.sidebar.number_input("Es (MPa): ",value=200000, step=100)
 
+coefficient = st.sidebar.selectbox("Material Coefficient: ", {"Nominal", "Expected"})
 gamma_concrete = st.sidebar.number_input("γconcrete (MPa): ",value=1, step=100)
 gamma_steel = st.sidebar.number_input("γsteel (MPa): ",value=1, step=100)
 
@@ -49,9 +51,19 @@ with col2:
 with col3:
     ny = st.number_input("Number of Rebar Layer: ", value=4, step=100)
     
+col1, col2, col3, col4 = st.columns(4)
+with col1:
+    dia_trans = st.number_input("Diameter of Transverse Rebar - Φ: ",value=8.0, step=1.0)
+with col2:
+    s = st.number_input("Spacing of Transverse Rebar - s: ",value=150.0, step=10.0)
+with col3:
+    n_leg_x = st.number_input("Number of Transverse Rebar - X Dir - n_leg_x: ",value=3.0, step=1.0)
+with col4:
+    n_leg_y = st.number_input("Number of Transverse Rebar - Y Dir - n_leg_y: ",value=3.0, step=1.0)
+    
+    
+total_rebar = nx*2 + (ny-2)*2
 diameter_area = int(diameter*diameter*math.pi/4)
-
-
 
 # Material Properties
 
@@ -440,57 +452,6 @@ hide_menu_style = """
 st.markdown(hide_menu_style, unsafe_allow_html=True)
 
 
-def MomentCurvature(name, concrete_output,steel_output,moment_curvature_output,secTag, b1, b2, h1, h2, axialLoad, maxK, numIncr):
-        
-        # Define two nodes at (0,0)
-        node(1, 0.0, 0.0)
-        node(2, 0.0, 0.0)
-    
-        # Fix all degrees of freedom except axial and bending
-        fix(1, 1, 1, 1)
-        fix(2, 0, 1, 0)
-        
-        # Define element
-        #                             tag ndI ndJ  secTag
-        element('zeroLengthSection',  1,   1,   2,  secTag)
-        
-             
-        # Create recorder  
-        recorder('Element', '-file', concrete_output, '-precision', int(5), '-time', '-dT', float(0.1) ,'-ele', 1, 'section', 'fiber', str(b1), str(h1), '1', 'stressStrain')
-        recorder('Element', '-file', steel_output, '-precision', int(5), '-time', '-dT', float(0.1) ,'-ele', 1, 'section', 'fiber', str(b2), str(h2), '3', 'stressStrain')
-        recorder('Node', '-file', moment_curvature_output, '-time','-dT', float(0.1) , '-node', 2, '-dof', 3, 'disp')
-    
-        # Define constant axial load
-        timeSeries('Constant', 1)
-        pattern('Plain', 1, 1)
-        load(2, int(axialLoad), 0.0, 0.0)
-    
-        # Define analysis parameters
-        integrator('LoadControl', 0.0)
-        system('SparseGeneral', '-piv')
-        test('NormUnbalance', 1e-6, 10)
-        numberer('Plain')
-        constraints('Plain')
-        algorithm('Newton')
-        analysis('Static')
-    
-        # Do one analysis for constant axial load
-        analyze(1)
-    
-        # Define reference moment
-        timeSeries('Linear', 2)
-        pattern('Plain',2, 2)
-        load(2, 0.0, 0.0, 1.0)
-    
-        # Compute curvature increment
-        dK = maxK / numIncr
-
-        # Use displacement control at node 2 for section analysis
-        integrator('DisplacementControl', 2,3,dK,1,dK,dK)
-
-        # Do the section analysis
-        analyze(numIncr)
-
 # def ConfinedConcrete(name, secTag, b1, b2, h1, h2, axialLoad, maxK, numIncr=100):    
 #     bo = width - cover
 #     ho = depth - cover
@@ -509,18 +470,18 @@ name = "name"
 # --------------------
 model('basic','-ndm',2,'-ndf',3)
 
+ec_conf, fc_conf, fc_unconf, ec_unconf, fcc, eco, esp = concrete_func(fcd,fyd, b, h, cover, diameter, total_rebar, dia_trans, nx, ny, n_leg_x, n_leg_y, s, young_modulus_concrete, coefficient)
+
 secTag = 1
 # Define materials for nonlinear columns
 # ------------------------------------------
 # CONCRETE                  tag   f'c        ec0   ecu E
 # Core concrete (confined)
 
-ecc = 0.002
-
-uniaxialMaterial('Concrete04',1, int(-fcd), float(-0.0150),  -0.02,  int(young_modulus_concrete), 0.0, 0.0, 0.1)
+uniaxialMaterial('Concrete04',1, int(-fcc), float(-eco),  float(-0.02),  int(young_modulus_concrete), 0.0, 0.0, 0.1)
 
 # Cover concrete (unconfined)
-uniaxialMaterial('Concrete04',2, -fcd,  -0.002,  -0.004,  young_modulus_concrete, 0.0, 0.0, 0,1)
+uniaxialMaterial('Concrete04',2, -fcd,  -eco,  -esp,  young_modulus_concrete, 0.0, 0.0, 0,1)
 
 # uniaxialMaterial('Concrete04',1, float(fcc),  ecc,  -0.02,  Ec)
 
@@ -694,7 +655,7 @@ print("Estimated yield curvature: ", Ky)
    
    
 # Target ductility for analysis
-mu = 30
+mu = 15
 
 # Number of analysis increments
 numIncr = 10000
