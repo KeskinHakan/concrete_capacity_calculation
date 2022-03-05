@@ -20,7 +20,7 @@ import math
 
 # Unconfined and Confined Concrete Model (Mander Model)
 
-def concrete_func(fcd,fyd, b, h, cover, diameter, total_rebar, dia_trans, nx, ny, n_leg_x, n_leg_y, s, young_modulus_concrete, coefficient, ecu_maximum):
+def concrete_func(fcd,fyd, b, h, cover, diameter, total_rebar, dia_trans, nx, ny, n_leg_x, n_leg_y, s, young_modulus_concrete, coefficient):
     d = h-cover # clear height
     b_clear = b-cover # clear height
     A_long = 3.14*diameter**2/4 # pi için math kütüphanesi çağıralacak. Longitudinal rebar area
@@ -220,7 +220,13 @@ def concrete_func(fcd,fyd, b, h, cover, diameter, total_rebar, dia_trans, nx, ny
     df_fc = df_unconf['Stress']
     st.line_chart(df_fc)
     
+    we = min(ratio_x, ratio_y)*ke*(fyh/fco)
     
+    if 0.0035+0.04*sqrt(we) <= 0.018:
+        ecu_maximum = float(format(0.0035+0.04*sqrt(we), ".3f"))
+    else:
+        ecu_maximum = 0.018
+        
     fcc_max = df_conf.loc[df_conf['Stress']==fcc]
     eco_max = fcc_max['Strain'].iloc[0]
     ecu_max = df_conf.loc[df_conf['Strain']==ecu_maximum]
@@ -252,7 +258,9 @@ def concrete_func(fcd,fyd, b, h, cover, diameter, total_rebar, dia_trans, nx, ny
         key='download-csv'
     )
     
-    return fcc, eco, esp, ecu_max, fcu_max, df_conf, eco_max
+
+        
+    return fcc, eco, esp, ecu_max, fcu_max, df_conf, eco_max, ecu_maximum
 
 # coefficient = st.sidebar.selectbox("Material Coefficient: ", {"Nominal", "Expected"})
 

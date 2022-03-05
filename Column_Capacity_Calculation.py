@@ -30,7 +30,7 @@ b = st.sidebar.number_input("Depth (mm): ", value=500, step=50)
 h = st.sidebar.number_input("Width (mm): ",value=500, step=50)
 degree = st.sidebar.selectbox("Degree Type: ", {0, 90})
 cover = st.sidebar.number_input("Cover (mm): ",value=30, step=5)
-ecu_maximum = st.sidebar.number_input("Crushing Strain: ",value=0.011, step=0.001)
+# ecu_maximum = st.sidebar.number_input("Crushing Strain: ",value=0.011, step=0.001)
 
 st.sidebar.header("Material Properties Properties")
 concrete_strength = st.sidebar.number_input("fc (MPa): ",value=25, step=100)
@@ -73,7 +73,7 @@ fyd = steel_strength/gamma_steel
 fctd = fctk/gamma_concrete
 # 
 
-fcc, eco, esp, ecu_max, fcu_max, df_conf, eco_max = concrete_func(fcd,fyd, b, h, cover, diameter, total_rebar, dia_trans, nx, ny, n_leg_x, n_leg_y, s, young_modulus_concrete, coefficient, ecu_maximum)
+fcc, eco, esp, ecu_max, fcu_max, df_conf, eco_max, ecu_maximum = concrete_func(fcd,fyd, b, h, cover, diameter, total_rebar, dia_trans, nx, ny, n_leg_x, n_leg_y, s, young_modulus_concrete, coefficient)
 
 x_dir_list = []
 
