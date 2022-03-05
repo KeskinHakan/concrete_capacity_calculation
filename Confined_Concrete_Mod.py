@@ -39,18 +39,18 @@ def concrete_func(fcd,fyd, b, h, cover, diameter, total_rebar, dia_trans, nx, ny
     col1, col2, col3,col4,col5 = st.columns([1,1,1,1,1])
     col2.image(img_1, width = 500, caption = "Typical Column Section")
     
-    if nx == 2:
+    if ny == 2:
         col1, col2, col3 = st.columns(3)
         with col1:
             ax1 = st.number_input("ax1: ", value=360.0, step=1.0)
         total_ax = ax1**2
-    elif nx == 3:
+    elif ny == 3:
         col1, col2, col3 = st.columns(3)
         with col1:
             ax1 = st.number_input("ax1: ", value=360.0, step=1.0)
             ax2 = st.number_input("ax2: ", value=180.0, step=1.0)
         total_ax = ax1**2+ax2**2
-    elif nx == 4:
+    elif ny == 4:
         col1, col2, col3 = st.columns(3)
         with col1:
             ax1 = st.number_input("ax1: ", value=143.0, step=1.0)
@@ -58,7 +58,7 @@ def concrete_func(fcd,fyd, b, h, cover, diameter, total_rebar, dia_trans, nx, ny
         with col2:
             ax3 = st.number_input("ax3: ", value=143.0, step=1.0)
         total_ax = ax1**2+ax2**2+ax3**2
-    elif nx == 5:
+    elif ny == 5:
         col1, col2, col3 = st.columns(3)
         with col1:
             ax1 = st.number_input("ax1: ", value=360.0, step=1.0)
@@ -67,7 +67,7 @@ def concrete_func(fcd,fyd, b, h, cover, diameter, total_rebar, dia_trans, nx, ny
             ax3 = st.number_input("ax3: ", value=180.0, step=1.0)
             ax4 = st.number_input("ax4: ", value=180.0, step=1.0)
         total_ax = ax1**2+ax2**2+ax3**2+ax4**2
-    elif nx == 6:
+    elif ny == 6:
         col1, col2, col3 = st.columns(3)
         with col1:
             ax1 = st.number_input("ax1: ", value=360.0, step=1.0)
@@ -78,7 +78,7 @@ def concrete_func(fcd,fyd, b, h, cover, diameter, total_rebar, dia_trans, nx, ny
         with col3:
             ax5 = st.number_input("ax5: ", value=180.0, step=1.0)
         total_ax = ax1**2+ax2**2+ax3**2+ax4**2+ax5**2
-    elif nx == 7:
+    elif ny == 7:
         col1, col2, col3 = st.columns(3)
         with col1:
             ax1 = st.number_input("ax1: ", value=360.0, step=1.0)
@@ -90,18 +90,18 @@ def concrete_func(fcd,fyd, b, h, cover, diameter, total_rebar, dia_trans, nx, ny
             ax5 = st.number_input("ax5: ", value=180.0, step=1.0)
             ax6 = st.number_input("ax6: ", value=180.0, step=1.0)
         total_ax = ax1**2+ax2**2+ax3**2+ax4**2+ax5**2+ax6**2
-    if ny == 2:
+    if nx == 2:
         col1, col2, col3 = st.columns(3)
         with col1:
             ay1 = st.number_input("ay1: ", value=360.0, step=1.0)
         total_ay = ay1**2
-    elif ny == 3:
+    elif nx == 3:
         col1, col2, col3 = st.columns(3)
         with col1:
             ay1 = st.number_input("ay1: ", value=360.0, step=1.0)
             ay2 = st.number_input("ay2: ", value=180.0, step=1.0)
         total_ay = ay1**2+ay2**2
-    elif ny == 4:
+    elif nx == 4:
         col1, col2, col3 = st.columns(3)
         with col1:
             ay1 = st.number_input("ay1: ", value=143.0, step=1.0)
@@ -109,7 +109,7 @@ def concrete_func(fcd,fyd, b, h, cover, diameter, total_rebar, dia_trans, nx, ny
         with col2:
             ay3 = st.number_input("ay3: ", value=143.0, step=1.0)
         total_ay = ay1**2+ay2**2+ay3**2
-    elif ny == 5:
+    elif nx == 5:
         col1, col2, col3 = st.columns(3)
         with col1:
             ay1 = st.number_input("ay1: ", value=360.0, step=1.0)
@@ -118,7 +118,7 @@ def concrete_func(fcd,fyd, b, h, cover, diameter, total_rebar, dia_trans, nx, ny
             ay3 = st.number_input("ay3: ", value=180.0, step=1.0)
             ay4 = st.number_input("ay4: ", value=180.0, step=1.0)
         total_ay = ay1**2+ay2**2+ay3**2+ay4**2
-    elif ny == 6:
+    elif nx == 6:
         col1, col2, col3 = st.columns(3)
         with col1:
             ay1 = st.number_input("ay1: ", value=360.0, step=1.0)
@@ -129,7 +129,7 @@ def concrete_func(fcd,fyd, b, h, cover, diameter, total_rebar, dia_trans, nx, ny
         with col3:
             ay5 = st.number_input("ay5: ", value=180.0, step=1.0)
         total_ay = ay1**2+ay2**2+ay3**2+ay4**2+ay5**2
-    elif ny == 7:
+    elif nx == 7:
         col1, col2, col3 = st.columns(3)
         with col1:
            ay1 = st.number_input("ay1: ", value=360.0, step=1.0)
