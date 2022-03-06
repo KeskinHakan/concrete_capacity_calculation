@@ -91,7 +91,7 @@ with col4:
     
 col1, col2, col3 = st.columns(3)
 with col2:
-    axialForce = st.number_input("Axial Load (kN): ", value=1500, step=10) 
+    axialForce = st.number_input("Axial Load (kN): ", value=250, step=10) 
     
 axialLoad = -1000*axialForce
     
