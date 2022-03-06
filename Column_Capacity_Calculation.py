@@ -22,6 +22,33 @@ from Confined_Concrete_Mod import concrete_func
 
 st.title("M-N Interaction & Moment-Curvature Calculator")
 
+"""
+Moment - Axial Force Interaction and Moment - Curvature curve can be calculated
+with this app.
+
+M-N analysis is performed by hand calculation method.
+Moment-Curvature analysis is performed with OpenSees section model.
+
+To obtain both diagrams, some parameters should be defined before the analysis.
+
+To use the app you should choose at the following items below:
+    
+    1- Rebar Diameters
+    2- Number of rebar layer for both directions.
+    3- Number of transverse leg for both directions.
+    4- Distance between main rebars.
+    5- Axial force for moment-curvature analysis
+    
+After the these definenings, program will calculate the concrete models to use 
+in the moment-curvature analysis. (Material models is downloadable)
+
+Note: This app just performed for personal using. Please do not use for 
+commercial works.
+
+"""
+
+st.header("Rebar Details")
+
 # Section Properties Defining
 
 st.sidebar.header("Section Properties")
@@ -32,7 +59,7 @@ degree = st.sidebar.selectbox("Degree Type: ", {0, 90})
 cover = st.sidebar.number_input("Cover (mm): ",value=30, step=5)
 # ecu_maximum = st.sidebar.number_input("Crushing Strain: ",value=0.011, step=0.001)
 
-st.sidebar.header("Material Properties Properties")
+st.sidebar.header("Material Properties")
 concrete_strength = st.sidebar.number_input("fc (MPa): ",value=25, step=100)
 young_modulus_concrete = 5000*math.sqrt(concrete_strength)
 fctk = 0.35*math.sqrt(concrete_strength)
@@ -61,6 +88,12 @@ with col3:
     n_leg_x = st.number_input("Number of Transverse Rebar - X Dir - n_leg_x: ",value=3.0, step=1.0)
 with col4:
     n_leg_y = st.number_input("Number of Transverse Rebar - Y Dir - n_leg_y: ",value=3.0, step=1.0)
+    
+col1, col2, col3 = st.columns(3)
+with col2:
+    axialForce = st.number_input("Axial Load (kN): ", value=1500, step=10) 
+    
+axialLoad = -1000*axialForce
     
     
 total_rebar = nx*2 + (ny-2)*2
@@ -350,6 +383,9 @@ Moment_List.insert(total_step+1, 0)
 Force_List.insert(0, Nc)
 Force_List.insert(total_step+1, Nt)
 
+
+st.header("Schematical View of Section")
+
 if degree == 0:
     y1 = int(b/2.0)
     z1 = int(h/2.0)
@@ -401,11 +437,7 @@ plt.axis('equal')
 st.set_option('deprecation.showPyplotGlobalUse', False)
 st.pyplot(m)
 
-col1, col2, col3 = st.columns(3)
-with col2:
-    axialForce = st.number_input("Axial Load (kN): ", value=100, step=10) 
-    
-axialLoad = -1000*axialForce
+
 
 df_m_n = pd.DataFrame(list(zip(Force_List, Moment_List)), columns =['Axial Force', 'Moment'], dtype = float)
 Moment_List_180 = [x * -1 for x in Moment_List]
@@ -433,19 +465,21 @@ def convert_design_df(df_m_n):
 
 csv_design = convert_design_df(df_m_n)
 
-if degree == 0:
-    document_code = "M-N Interaction (0 Degree) - Press to Download"
-    csv_file = "m_n_interaction_0.csv"
-elif degree == 90:
-    document_code = "M-N Interaction (90 Degree) - Press to Download"
-    csv_file = "m_n_interaction_90.csv"
-st.download_button(
-   document_code,
-   csv_design,
-   "m_n_interaction.csv",
-   "text/csv",
-   key='download-csv'
-)
+col1, col2, col3 = st.columns(3)
+with col2:
+    if degree == 0:
+        document_code = "M-N Interaction (0 Degree) - Press to Download"
+        csv_file = "m_n_interaction_0.csv"
+    elif degree == 90:
+        document_code = "M-N Interaction (90 Degree) - Press to Download"
+        csv_file = "m_n_interaction_90.csv"
+    st.download_button(
+       document_code,
+       csv_design,
+       "m_n_interaction.csv",
+       "text/csv",
+       key='download-csv'
+    )
 
 hide_menu_style = """
         <style>
@@ -713,17 +747,20 @@ def convert_design_m_c(df):
 
 csv_design = convert_design_m_c(df)
 
-if degree == 0:
-    document_code_mc = "Moment - Curvature (0 Degree) - Press to Download"
-    csv_file_mc = "m_n_interaction_0.csv"
-elif degree == 90:
-    document_code_mc = "Moment - Curvature (90 Degree) - Press to Download"
-    csv_file_mc = "m_n_interaction_90.csv"
+col1, col2, col3 = st.columns(3)
+with col2:
     
-st.download_button(
-   document_code_mc,
-   csv_design,
-   csv_file_mc,
-   "text/csv",
-   key='download-csv'
-)
+    if degree == 0:
+        document_code_mc = "Moment - Curvature (0 Degree) - Press to Download"
+        csv_file_mc = "m_n_interaction_0.csv"
+    elif degree == 90:
+        document_code_mc = "Moment - Curvature (90 Degree) - Press to Download"
+        csv_file_mc = "m_n_interaction_90.csv"
+        
+    st.download_button(
+       document_code_mc,
+       csv_design,
+       csv_file_mc,
+       "text/csv",
+       key='download-csv'
+    )

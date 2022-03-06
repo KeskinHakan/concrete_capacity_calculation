@@ -242,21 +242,23 @@ def concrete_func(fcd,fyd, b, h, cover, diameter, total_rebar, dia_trans, nx, ny
     csv_conf = convert_confined_df(df_conf)
     csv_unconf = convert_unconfined_df(df_unconf)
     
-    st.download_button(
-        "Confined Concrete - Press to Download",
-        csv_conf,
-        "confined.csv",
-        "text/csv",
-        key='download-csv'
-    )
-    
-    st.download_button(
-        "Unconfined Concrete - Press to Download",
-        csv_unconf,
-        "unconfined.csv",
-        "text/csv",
-        key='download-csv'
-    )
+    col1, col2, col3 = st.columns(3)
+    with col2:
+        st.download_button(
+            "Confined Concrete - Press to Download",
+            csv_conf,
+            "confined.csv",
+            "text/csv",
+            key='download-csv'
+        )
+        
+        st.download_button(
+            "Unconfined Concrete - Press to Download",
+            csv_unconf,
+            "unconfined.csv",
+            "text/csv",
+            key='download-csv'
+        )
     
 
         
